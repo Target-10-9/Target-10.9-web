@@ -1,17 +1,69 @@
-# Target-10.9-web
-🎯 Target-10.9 est un système de cible connectée pour le tir sportif. Le projet combine des capteurs physiques, une API, et des interfaces web/mobile pour offrir une expérience interactive en temps réel. Chaque tir est analysé grâce aux vibrations sur la cible, permettant d’afficher le score et la position exacte de l’impact en direct.
+# React + TypeScript + Vite
 
-## 🔧 Composants du projet
-Target-10.9-web -> Interface web (et potentiellement mobile via PWA ou application dédiée) permettant :
-- d’afficher en temps réel le score du tireur,
-- de visualiser la cible en 3D avec les impacts représentés,
-- de consulter les statistiques et historiques des sessions précédentes.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 📌 Objectifs du projet (MVP)
-- ✅ Détecter les impacts sur la cible via capteurs de vibrations.
-- ✅ Calculer et afficher le score en temps réel.
-- ✅ Envoyer les données à l’API.
-- ✅ Afficher la cible en 3D avec les impacts visibles sur l’interface web/mobile.
-- ✅ Sauvegarder les sessions et afficher des statistiques.
+Currently, two official plugins are available:
 
-## 🚀 Stack technique
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
