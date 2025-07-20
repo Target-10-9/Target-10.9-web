@@ -61,7 +61,7 @@ export const LoginForm: React.FC = () => {
 
             <button
                 type="submit"
-                className="w-full py-3 rounded-full bg-[#123189] text-white font-semibold hover:bg-[#991d35] shadow-lg transition"
+                className="w-full py-3 rounded-full bg-[#123189] text-white font-semibold hover:bg-[#58628a] shadow-lg transition"
             >
                 Se connecter
             </button>
