@@ -5,11 +5,11 @@ export async function login(email: string, password: string) {
         body: JSON.stringify({ email, password }),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Erreur serveur');
+        throw data;
     }
 
-    const data = await response.json();
     return data;
 }

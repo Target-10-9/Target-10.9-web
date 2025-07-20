@@ -13,44 +13,60 @@ export const LoginForm: React.FC = () => {
             const response = await login(email, password);
             localStorage.setItem('token', response.token);
         } catch (err: any) {
-            setError(err.message || 'Erreur lors de la connexion');
+            if (err?.errors) {
+                const globalError = err.errors.map((e: any) => `${e.field}: ${e.message}`).join(', ');
+                setError(globalError);
+
+            } else if (err?.message) {
+                setError(err.message);
+
+            } else {
+                setError('Une erreur est survenue');
+            }
         }
+
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
+            <h2 className="text-3xl font-bold text-center text-[#333] mb-4">Connexion</h2>
+
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Adresse e-mail :</label>
+                <label className="block text-sm text-gray-600 mb-1">Adresse e-mail :</label>
                 <input
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#b1283f] focus:outline-none"
+                    className="w-full px-5 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#123189] focus:outline-none transition shadow-sm"
+                    placeholder="votre@email.com"
                 />
             </div>
+
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe :</label>
+                <label className="block text-sm text-gray-600 mb-1">Mot de passe :</label>
                 <input
                     type="password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#b1283f] focus:outline-none"
+                    className="w-full px-5 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#123189] focus:outline-none transition shadow-sm"
+                    placeholder="••••••••"
                 />
             </div>
-            <div className="text-sm text-right">
-                <a href="#" className="text-blue-600 hover:underline">Mot de passe oubliée</a>
+
+            <div className="text-right">
+                <a href="#" className="text-sm text-blue-600 hover:underline">Mot de passe oublié ?</a>
             </div>
+
             <button
                 type="submit"
-                className="w-full py-2 rounded-md bg-[#b1283f] text-white font-semibold hover:bg-[#991d35] shadow transition"
+                className="w-full py-3 rounded-full bg-[#123189] text-white font-semibold hover:bg-[#991d35] shadow-lg transition"
             >
-                se connecter
+                Se connecter
             </button>
-            {error && <p className="text-red-600 text-sm">{error}</p>}
+
+            {error && <p className="text-red-600 text-center text-sm">{error}</p>}
         </form>
     );
 };
-
-export default LoginForm;
