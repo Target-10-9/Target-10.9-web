@@ -1,3 +1,28 @@
+# Procédure de mis a jour de docker 
+
+Faire dans le terminal local du projet web : 
+
+```bash 
+  npm install
+```
+```bash 
+  npm run build
+```
+
+Dans la solution API, se placer dans le terminal docker  :
+
+```bash 
+  docker compose restart nginx
+```
+Si besoins de tout redémarer :
+```bash
+  docker compose up -d
+```
+
+
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
