@@ -29,7 +29,6 @@ export const HomePage: React.FC = () => {
             <PrivateHeader />
             <div className="min-h-screen flex flex-col overflow-hidden">
                 <div className="relative grid grid-cols-3 justify-items-center w-full min-h-[500px] px-12">
-                    {/* Titre */}
                     <div className="z-10 flex items-center h-full">
                         <h1 className="text-7xl font-extrabold italic bg-gradient-to-r from-[#58628a] to-[#123189] bg-clip-text text-transparent">
                             TARGET–10.9

@@ -12,7 +12,7 @@ export const PrivateHeader: React.FC = () => {
     return (
         <header className="flex items-center justify-between px-8 py-4 bg-white shadow">
             <div className="flex items-center gap-4">
-                <img src={logo} alt="Logo" className="h-14 w-14 rounded-full object-cover" />
+                <Link to="/home"><img src={logo} alt="Logo" className="h-14 w-14 rounded-full object-cover" /></Link>
             </div>
 
             <nav className="flex gap-8">
