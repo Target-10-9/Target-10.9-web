@@ -184,6 +184,7 @@ export const SessionPage: React.FC = () => {
                             {filteredSessions.map((session, i) => (
                                 <SessionCard
                                     key={i}
+                                    sessionId={session.id}
                                     title={session.name}
                                     description={new Date(session.dateStart).toLocaleString('fr-FR', {
                                         dateStyle: 'medium',

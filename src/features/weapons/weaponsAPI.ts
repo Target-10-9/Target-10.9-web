@@ -1,7 +1,7 @@
-export async function getSessionModes() {
+export async function getWeapons() {
     const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:5203/api/SessionMode', {
+    const response = await fetch('http://localhost:5203/api/WeaponDetail', {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -14,6 +14,5 @@ export async function getSessionModes() {
     }
 
     const data = await response.json();
-    console.log("Session modes fetched:", data);
     return data;
 }

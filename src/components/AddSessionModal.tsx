@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createSession } from '../features/sessions/sessionsAPI';
-import { getSessionModes } from '../features/sessionModes/sessionModeAPI';
+import { getSessionModes } from '../features/sessionModes/sessionModesAPI.ts';
 
 interface SessionMode {
     id: string;
