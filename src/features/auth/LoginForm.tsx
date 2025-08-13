@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import {useNavigate} from "react-router-dom";
 import { login } from './authAPI';
 
 export const LoginForm: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -12,6 +14,7 @@ export const LoginForm: React.FC = () => {
         try {
             const response = await login(email, password);
             localStorage.setItem('token', response.token);
+            navigate('/home');
         } catch (err: any) {
             if (err?.errors) {
                 const globalError = err.errors.map((e: any) => `${e.field}: ${e.message}`).join(', ');
