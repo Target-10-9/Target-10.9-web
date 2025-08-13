@@ -52,6 +52,7 @@ export const HomePage: React.FC = () => {
                             sessions.map((session, i) => (
                                 <SessionCard
                                     key={i}
+                                    sessionId={session.id}
                                     title={session.name}
                                     description={session.dateStart}
                                 />

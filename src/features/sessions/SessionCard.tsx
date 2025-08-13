@@ -1,13 +1,17 @@
+import { useNavigate } from 'react-router-dom';
 import React from 'react';
 import ShootingTraining from '../../assets/ShootingTraining.jpg';
 import CompetitiveShooting from '../../assets/CompetitiveShooting.jpg';
 
 interface SessionCardProps {
+    sessionId: string;
     title: string;
     description: string;
 }
 
-export const SessionCard: React.FC<SessionCardProps> = ({ title, description }) => {
+export const SessionCard: React.FC<SessionCardProps> = ({ sessionId, title, description }) => {
+    const navigate = useNavigate();
+
     let backgroundImage = '';
 
     function removeAccents(str: string) {
@@ -22,8 +26,15 @@ export const SessionCard: React.FC<SessionCardProps> = ({ title, description }) 
         backgroundImage = CompetitiveShooting;
     }
 
+    const handleClick = () => {
+        navigate(`/session/${sessionId}`);
+    };
+    
     return (
-        <div className="rounded-xl shadow-lg w-full max-w-xs overflow-hidden bg-white mb-6">
+        <div
+            onClick={handleClick}
+            className="rounded-xl shadow-lg w-full max-w-xs overflow-hidden bg-white mb-6 cursor-pointer hover:shadow-xl transition-shadow"
+        >
             <div className="relative h-40 w-full">
                 <img
                     src={backgroundImage}

@@ -3,8 +3,11 @@ import { getSessions } from '../features/sessions/sessionsAPI';
 import { SessionCard } from '../features/sessions/SessionCard';
 import ShootImage from '../assets/ShootImageLogin.jpg';
 import { PrivateHeader } from '../components/PrivateHeader';
+import {AddSessionModal} from "../components/AddSessionModal.tsx";
 
 export const SessionPage: React.FC = () => {
+    const [showModal, setShowModal] = useState(false);
+
     const [sessions, setSessions] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
 
@@ -80,6 +83,12 @@ export const SessionPage: React.FC = () => {
                 </div>
 
                 <div className="mt-20 w-full max-w-7xl px-4">
+                    <button
+                        className="bg-[#be7c49] text-white px-4 mb-2 py-2 w-2/12 rounded-full text-sm"
+                        onClick={() => setShowModal(true)}
+                    >
+                        Ajouter
+                    </button>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                         <h2 className="text-3xl font-semibold text-[#123189]">
                             SESSIONS À VENIR
@@ -175,6 +184,7 @@ export const SessionPage: React.FC = () => {
                             {filteredSessions.map((session, i) => (
                                 <SessionCard
                                     key={i}
+                                    sessionId={session.id}
                                     title={session.name}
                                     description={new Date(session.dateStart).toLocaleString('fr-FR', {
                                         dateStyle: 'medium',
@@ -185,6 +195,14 @@ export const SessionPage: React.FC = () => {
                         </div>
                     )}
                 </div>
+                {showModal && (
+                    <AddSessionModal
+                        onClose={() => setShowModal(false)}
+                        onSessionCreated={() => {
+                            getSessions().then((data) => setSessions(data));
+                        }}
+                    />
+                )}
             </div>
         </>
     );
