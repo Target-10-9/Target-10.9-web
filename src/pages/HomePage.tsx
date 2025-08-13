@@ -3,6 +3,7 @@ import { getSessions } from '../features/sessions/sessionsAPI';
 import { SessionCard } from '../features/sessions/SessionCard';
 import ShootImage from '../assets/ShootImageLogin.jpg';
 import { PrivateHeader } from '../components/PrivateHeader';
+import {Link} from "react-router-dom";
 
 export const HomePage: React.FC = () => {
     const [sessions, setSessions] = useState<any[]>([]);
@@ -29,7 +30,6 @@ export const HomePage: React.FC = () => {
             <PrivateHeader />
             <div className="min-h-screen flex flex-col overflow-hidden">
                 <div className="relative grid grid-cols-3 justify-items-center w-full min-h-[500px] px-12">
-                    {/* Titre */}
                     <div className="z-10 flex items-center h-full">
                         <h1 className="text-7xl font-extrabold italic bg-gradient-to-r from-[#58628a] to-[#123189] bg-clip-text text-transparent">
                             TARGET–10.9
@@ -61,9 +61,9 @@ export const HomePage: React.FC = () => {
                 </div>
 
                 <div className="mt-4 pl-12 absolute bottom-10 left-0">
-                    <button className="bg-[#123189] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#58628a] transition">
+                    <Link to={"/sessions"} className="bg-[#123189] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#58628a] transition">
                         MES SESSIONS
-                    </button>
+                    </Link>
                 </div>
             </div>
         </>
