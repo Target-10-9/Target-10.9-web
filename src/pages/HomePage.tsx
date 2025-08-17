@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getSessions } from '../features/sessions/sessionsAPI';
-import { SessionCard } from '../features/sessions/SessionCard';
+import { SessionCard } from '../components/SessionCard.tsx';
 import ShootImage from '../assets/ShootImageLogin.jpg';
 import { PrivateHeader } from '../components/PrivateHeader';
 import {Link} from "react-router-dom";
