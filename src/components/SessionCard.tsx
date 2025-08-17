@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
-import ShootingTraining from '../../assets/ShootingTraining.jpg';
-import CompetitiveShooting from '../../assets/CompetitiveShooting.jpg';
+import ShootingTraining from '../assets/ShootingTraining.jpg';
+import CompetitiveShooting from '../assets/CompetitiveShooting.jpg';
 
 interface SessionCardProps {
     sessionId: string;

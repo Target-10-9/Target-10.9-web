@@ -26,14 +26,13 @@ export async function getSessionById(id: string) {
         }
     });
 
-    console.log("Response GetSessionById:", response);
-
     if (!response.ok) {
         const errorText = await response.text();
         console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
     const data = await response.json();
+    console.log("Session fetched:", data);
     return data;
 }
 

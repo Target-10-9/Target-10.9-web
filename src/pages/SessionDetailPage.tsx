@@ -193,13 +193,41 @@ export const SessionDetailPage: React.FC = () => {
         setStartSessionModal(true);
     };
 
-    const confirmStartSession = () => {
-        if (!id) return;
-        navigate(`/sessions/${id}`);
-        setStartSessionModal(false);
+    const confirmStartSession = async () => {
+        if (!id || !session) return;
+
+        try {
+            const sessionModeId = session.sessionModeId ?? session.sessionModes?.id;
+            if (!sessionModeId) {
+                console.error("Impossible de démarrer la session : sessionModeId manquant !");
+                return;
+            }
+
+            const payload = {
+                etat: "InProgress",
+                sessionModeId,
+                name: session.name,
+                dateStart: session.dateStart,
+                dateEnd: session.dateEnd,
+            };
+
+            await updateSession(id, payload);
+
+            const updated = await getSessionById(id);
+            setSession(updated);
+            setStartSessionModal(false);
+            navigate(`/sessions/${id}`);
+        } catch (err) {
+            console.error("Erreur lors du démarrage de la session :", err);
+        }
     };
 
-    if (!session) return <div className="p-6">Chargement...</div>;
+    if (!session) return (
+        <>
+        <PrivateHeader />
+            <div className="p-6">Chargement...</div>;
+        </>
+    );
 
     const image = getBackgroundImage(session.name);
 
@@ -259,39 +287,41 @@ export const SessionDetailPage: React.FC = () => {
                     )}
 
                     <div className="mt-4 flex flex-wrap gap-3">
-                        {!isEditing ? (
-                            <>
-                                <button
-                                    onClick={handleEditToggle}
-                                    className="bg-[#123189] hover:bg-[#58628a] transition-colors text-white px-4 py-2 rounded-md shadow"
-                                >
-                                    Modifier
-                                </button>
+                        {session.etat !== 'Finished' ? (
+                            !isEditing ? (
+                                <>
+                                    <button
+                                        onClick={handleEditToggle}
+                                        className="bg-[#123189] hover:bg-[#58628a] transition-colors text-white px-4 py-2 rounded-md shadow"
+                                    >
+                                        Modifier
+                                    </button>
 
-                                <button
-                                    onClick={handleStartClick}
-                                    className="bg-green-600 hover:bg-green-700 transition-colors text-white px-4 py-2 rounded-md shadow"
-                                >
-                                    Commencer la session
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    onClick={handleSave}
-                                    disabled={isSaving}
-                                    className="bg-green-600 disabled:opacity-60 hover:bg-green-700 transition-colors text-white px-4 py-2 rounded-md shadow"
-                                >
-                                    {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
-                                </button>
-                                <button
-                                    onClick={handleCancelEdit}
-                                    className="bg-gray-300 hover:bg-gray-350 transition-colors text-gray-800 px-4 py-2 rounded-md shadow"
-                                >
-                                    Annuler
-                                </button>
-                            </>
-                        )}
+                                    <button
+                                        onClick={handleStartClick}
+                                        className="bg-green-600 hover:bg-green-700 transition-colors text-white px-4 py-2 rounded-md shadow"
+                                    >
+                                        Commencer la session
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={isSaving}
+                                        className="bg-green-600 disabled:opacity-60 hover:bg-green-700 transition-colors text-white px-4 py-2 rounded-md shadow"
+                                    >
+                                        {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
+                                    </button>
+                                    <button
+                                        onClick={handleCancelEdit}
+                                        className="bg-gray-300 hover:bg-gray-350 transition-colors text-gray-800 px-4 py-2 rounded-md shadow"
+                                    >
+                                        Annuler
+                                    </button>
+                                </>
+                            )
+                        ) : null}
 
                         <button
                             onClick={handleDeleteSessionClick}
