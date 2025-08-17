@@ -459,6 +459,7 @@ export const SessionDetailPage: React.FC = () => {
                 onConfirm={confirmStartSession}
                 onCancel={() => setStartSessionModal(false)}
                 confirmText="Commencer"
+                confirmColor="#16a34a" // vert
                 cancelText="Annuler"
             />
         </>

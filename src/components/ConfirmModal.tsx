@@ -8,6 +8,7 @@ interface ConfirmModalProps {
     onCancel: () => void;
     confirmText?: string;
     cancelText?: string;
+    confirmColor?: string; // <-- nouvelle prop
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -17,7 +18,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                                                               onConfirm,
                                                               onCancel,
                                                               confirmText = "Oui",
-                                                              cancelText = "Non"
+                                                              cancelText = "Non",
+                                                              confirmColor = "#e53e3e" // rouge par défaut
                                                           }) => {
     if (!isOpen) return null;
 
@@ -35,7 +37,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                        style={{ backgroundColor: confirmColor }}
+                        className="px-4 py-2 text-white rounded hover:brightness-90"
                     >
                         {confirmText}
                     </button>
