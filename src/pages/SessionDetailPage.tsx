@@ -42,6 +42,7 @@ export const SessionDetailPage: React.FC = () => {
         weaponName: ''
     });
     const [startSessionModal, setStartSessionModal] = useState(false);
+    const [targetId, setTargetId] = useState('');
 
     const isoToLocalInput = (iso?: string) => {
         if (!iso) return '';
@@ -193,34 +194,34 @@ export const SessionDetailPage: React.FC = () => {
         setStartSessionModal(true);
     };
 
-    const confirmStartSession = async () => {
-        if (!id || !session) return;
-
-        try {
-            const sessionModeId = session.sessionModeId ?? session.sessionModes?.id;
-            if (!sessionModeId) {
-                console.error("Impossible de démarrer la session : sessionModeId manquant !");
-                return;
-            }
-
-            const payload = {
-                etat: "InProgress",
-                sessionModeId,
-                name: session.name,
-                dateStart: session.dateStart,
-                dateEnd: session.dateEnd,
-            };
-
-            await updateSession(id, payload);
-
-            const updated = await getSessionById(id);
-            setSession(updated);
-            setStartSessionModal(false);
-            navigate(`/sessions/${id}`);
-        } catch (err) {
-            console.error("Erreur lors du démarrage de la session :", err);
-        }
-    };
+    // const confirmStartSession = async () => {
+    //     if (!id || !session) return;
+    //
+    //     try {
+    //         const sessionModeId = session.sessionModeId ?? session.sessionModes?.id;
+    //         if (!sessionModeId) {
+    //             console.error("Impossible de démarrer la session : sessionModeId manquant !");
+    //             return;
+    //         }
+    //
+    //         const payload = {
+    //             etat: "InProgress",
+    //             sessionModeId,
+    //             name: session.name,
+    //             dateStart: session.dateStart,
+    //             dateEnd: session.dateEnd,
+    //         };
+    //
+    //         await updateSession(id, payload);
+    //
+    //         const updated = await getSessionById(id);
+    //         setSession(updated);
+    //         setStartSessionModal(false);
+    //         navigate(`/sessions/${id}`);
+    //     } catch (err) {
+    //         console.error("Erreur lors du démarrage de la session :", err);
+    //     }
+    // };
 
     if (!session) return (
         <>
@@ -485,13 +486,53 @@ export const SessionDetailPage: React.FC = () => {
             <ConfirmModal
                 isOpen={startSessionModal}
                 title="Commencer la session"
-                message="Voulez-vous vraiment commencer cette session de tir ?"
-                onConfirm={confirmStartSession}
+                message="Veuillez renseigner l'ID de votre cible pour commencer la session."
+                inputProps={{
+                    placeholder: "ID de la cible",
+                    value: targetId,
+                    onChange: setTargetId
+                }}
+                onConfirm={async (inputValue) => {
+                    if (!inputValue || inputValue.trim() === '') {
+                        alert("Vous devez renseigner l'ID de la cible !");
+                        return;
+                    }
+
+                    if (!id || !session) return;
+
+                    try {
+                        const sessionModeId = session.sessionModeId ?? session.sessionModes?.id;
+                        if (!sessionModeId) {
+                            console.error("Impossible de démarrer la session : sessionModeId manquant !");
+                            return;
+                        }
+
+                        const payload = {
+                            etat: "InProgress",
+                            sessionModeId,
+                            name: session.name,
+                            dateStart: session.dateStart,
+                            dateEnd: session.dateEnd,
+                            targetId: inputValue.trim()
+                        };
+
+                        await updateSession(id, payload);
+
+                        const updated = await getSessionById(id);
+                        setSession(updated);
+                        setStartSessionModal(false);
+                        setTargetId(''); // reset input
+                        navigate(`/sessions/${id}`);
+                    } catch (err) {
+                        console.error("Erreur lors du démarrage de la session :", err);
+                    }
+                }}
                 onCancel={() => setStartSessionModal(false)}
                 confirmText="Commencer"
-                confirmColor="#16a34a" // vert
                 cancelText="Annuler"
+                confirmColor="#16a34a"
             />
+
         </>
     );
 };
