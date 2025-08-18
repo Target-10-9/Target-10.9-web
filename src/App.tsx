@@ -4,6 +4,7 @@ import { HomePage } from './pages/HomePage';
 import {SessionPage} from "./pages/SessionPage.tsx";
 import {SessionDetailPage} from "./pages/SessionDetailPage.tsx";
 import {TargetPageWrapper} from "./pages/TargetPageWrapper.tsx";
+import {ProfilePage} from "./pages/ProfilePage.tsx";
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/sessions" element={<SessionPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/session/:id" element={<SessionDetailPage />} />
                 <Route path="/sessions/:sessionId" element={<TargetPageWrapper/>} />
             </Routes>

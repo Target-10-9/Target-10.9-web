@@ -14,6 +14,7 @@ export const LoginForm: React.FC = () => {
         try {
             const response = await login(email, password);
             localStorage.setItem('token', response.token);
+            localStorage.setItem('userId', response.id);
             navigate('/home');
         } catch (err: any) {
             if (err?.errors) {
