@@ -10,39 +10,23 @@ import { addPoint, getPointsBySessionId } from '../features/points/pointsAPI';
 import { getSessionById, updateSession } from '../features/sessions/sessionsAPI';
 import { timeStringToSeconds, formatSeconds } from '../utils/timeUtils';
 import { Overlay } from '../components/Overlay';
-
-const MAX_RADIUS = 1.0;
-const RING_COUNT = 10;
-const RING_WIDTH = MAX_RADIUS / RING_COUNT;
+import ringsData from '../data/targetRings.json';
 
 type Ring = { radiusOuter: number; radiusInner: number; color: string; score: number };
 type TargetPageProps = { sessionId: string };
 type ApiPoint = { id?: string; x_Coordinate: number; y_Coordinate: number; dateTimePoint?: string; sessionId: string };
 type Shot = { position: THREE.Vector3; score: number };
 
-/* --------- Utilitaires --------- */
-function colorForScore(score: number) {
-    if (score >= 9) return '#ffff00';
-    if (score >= 7) return '#ff0000';
-    if (score >= 5) return '#0000ff';
-    if (score >= 3) return '#000000';
-    return '#ffffff';
-}
+const rings: Ring[] = ringsData;
 
-const rings: Ring[] = Array.from({ length: RING_COUNT }).map((_, i) => {
-    const outer = MAX_RADIUS - i * RING_WIDTH;
-    const inner = Math.max(0, outer - RING_WIDTH);
-    const score = i + 1;
-    return { radiusOuter: outer, radiusInner: inner, color: colorForScore(score), score };
-});
-
+/* --------- Calcul du score --------- */
 function scoreForXY(x: number, y: number): number {
     const distance = Math.sqrt(x * x + y * y);
-    const hitRing = rings.find((r) => distance <= r.radiusOuter && distance >= r.radiusInner);
+    const hitRing = rings.find(r => distance >= r.radiusInner && distance <= r.radiusOuter);
     return hitRing ? hitRing.score : 0;
 }
 
-/* --------- Hooks --------- */
+/* --------- Hook countdown manuel --------- */
 function useManualCountdown(initialSeconds: number) {
     const [seconds, setSeconds] = useState(initialSeconds);
     const [initial, setInitial] = useState(initialSeconds);
@@ -50,9 +34,8 @@ function useManualCountdown(initialSeconds: number) {
 
     useEffect(() => {
         if (!running || seconds <= 0) return;
-
         const interval = setInterval(() => {
-            setSeconds((prev) => {
+            setSeconds(prev => {
                 if (prev <= 1) {
                     clearInterval(interval);
                     setRunning(false);
@@ -61,7 +44,6 @@ function useManualCountdown(initialSeconds: number) {
                 return prev - 1;
             });
         }, 1000);
-
         return () => clearInterval(interval);
     }, [running, seconds]);
 
@@ -77,7 +59,7 @@ function useManualCountdown(initialSeconds: number) {
     return { seconds, initial, start, stop, reset, running };
 }
 
-/* --------- Composants --------- */
+/* --------- Composants UI --------- */
 const buttonStyle = (bg: string, disabled: boolean) => ({
     background: bg,
     border: 'none',
@@ -164,8 +146,6 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
 
     const shooting = useManualCountdown(0);
     const rest = useManualCountdown(0);
-
-    // Overlay session terminée stable
     const [showSessionEnded, setShowSessionEnded] = useState(false);
 
     /* ---- Charger session et points ---- */
@@ -188,7 +168,7 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
                 const apiPoints: ApiPoint[] = await getPointsBySessionId(sessionId);
                 if (!mounted) return;
 
-                const mapped: Shot[] = (apiPoints || []).map((p) => ({
+                const mapped: Shot[] = (apiPoints || []).map(p => ({
                     position: new THREE.Vector3(p.x_Coordinate, p.y_Coordinate, 0),
                     score: scoreForXY(p.x_Coordinate, p.y_Coordinate),
                 }));
@@ -201,9 +181,7 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
             }
         })();
 
-        return () => {
-            mounted = false;
-        };
+        return () => { mounted = false; };
     }, [sessionId]);
 
     /* ---- Gestion des tirs ---- */
@@ -213,10 +191,9 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
         if (shotsFired >= limit || shooting.seconds <= 0) return;
 
         const score = scoreForXY(p.x, p.y);
-
-        setShots((prev) => [...prev, { position: new THREE.Vector3(p.x, p.y, 0), score }]);
-        setScoreTotal((prev) => prev + score);
-        setShotsFired((prev) => prev + 1);
+        setShots(prev => [...prev, { position: new THREE.Vector3(p.x, p.y, 0), score }]);
+        setScoreTotal(prev => prev + score);
+        setShotsFired(prev => prev + 1);
 
         try {
             await addPoint({
@@ -230,7 +207,7 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
         }
     };
 
-    /* ---- Groupes de 10 et détails ---- */
+    /* ---- Groupes et détails des tirs ---- */
     const shotsGrouped = useMemo(() => {
         const groups: { group: number; count: number; total: number }[] = [];
         for (let i = 0; i < shots.length; i += 10) {
@@ -247,18 +224,13 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
     const timerEnded = shooting.initial > 0 && shooting.seconds <= 0 && !shooting.running;
     const sessionEnded = limitReached || timerEnded;
 
-    // Stabiliser overlay session terminée
     useEffect(() => {
-        if (sessionEnded && !showSessionEnded) {
-            setShowSessionEnded(true);
-        }
+        if (sessionEnded && !showSessionEnded) setShowSessionEnded(true);
     }, [sessionEnded, showSessionEnded]);
 
-    // Mettre à jour la session côté API si elle n'est pas déjà terminée
     useEffect(() => {
         const finishSession = async () => {
             if (!session || !sessionEnded || session.etat === 'Finished') return;
-
             try {
                 const payload = {
                     etat: "Finished",
@@ -282,30 +254,16 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
     return (
         <>
             <PrivateHeader />
-            <div
-                style={{
-                    height: 'calc(100vh - 60px)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 20,
-                    background: '#f3f4f6',
-                    padding: 20,
-                    position: 'relative',
-                }}
-            >
-                {!session ? (
-                    <div>Chargement de la session...</div>
-                ) : (
+            <div style={{ height: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, background: '#f3f4f6', padding: 20, position: 'relative' }}>
+                {!session ? <div>Chargement de la session...</div> : (
                     <>
                         <h2 style={{ fontSize: 28, fontWeight: 700, color: '#111827' }}>Score total : {scoreTotal}</h2>
-
                         <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
                             {/* GAUCHE - Tirs par groupe */}
                             <div style={{ minWidth: 100, maxHeight: 800, overflow: 'auto', background: '#fff', padding: 12, borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
                                 <h3 style={{ fontWeight: 600, marginBottom: 8 }}>Tirs par groupe de 10</h3>
                                 {shotsGrouped.length === 0 ? <p style={{ color: '#6b7280' }}>Aucun tir</p> :
-                                    shotsGrouped.map((g) => <p key={g.group} style={{ margin: 2 }}>{g.group} : {g.count} → {g.total}</p>)
+                                    shotsGrouped.map(g => <p key={g.group} style={{ margin: 2 }}>{g.group} : {g.count} → {g.total}</p>)
                                 }
                             </div>
 
@@ -313,12 +271,10 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
                             <Canvas style={{ width: 700, height: 700 }} camera={{ position: [0, 0, 3], fov: 50 }}>
                                 <ambientLight intensity={0.6} />
                                 <directionalLight position={[5, 5, 5]} intensity={0.8} />
-
                                 <mesh position={[0, 0, -0.01]}>
-                                    <planeGeometry args={[MAX_RADIUS * 2.5, MAX_RADIUS * 2.5]} />
+                                    <planeGeometry args={[1.0 * 2.5, 1.0 * 2.5]} />
                                     <meshBasicMaterial color="#f0f0f0" />
                                 </mesh>
-
                                 <TargetRings onHit={handleHit} />
                                 {shots.map((s, i) => <Cross key={i} position={s.position} />)}
                             </Canvas>
