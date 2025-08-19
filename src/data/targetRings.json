@@ -1,0 +1,12 @@
+[
+  { "score": 10, "radiusInner": 0.0, "radiusOuter": 0.1, "color": "#ffff00" },
+  { "score": 9, "radiusInner": 0.1, "radiusOuter": 0.2, "color": "#ffff00" },
+  { "score": 8, "radiusInner": 0.2, "radiusOuter": 0.3, "color": "#ff0000" },
+  { "score": 7, "radiusInner": 0.3, "radiusOuter": 0.4, "color": "#ff0000" },
+  { "score": 6, "radiusInner": 0.4, "radiusOuter": 0.5, "color": "#0000ff" },
+  { "score": 5, "radiusInner": 0.5, "radiusOuter": 0.6, "color": "#0000ff" },
+  { "score": 4, "radiusInner": 0.6, "radiusOuter": 0.7, "color": "#000000" },
+  { "score": 3, "radiusInner": 0.7, "radiusOuter": 0.8, "color": "#000000" },
+  { "score": 2, "radiusInner": 0.8, "radiusOuter": 0.9, "color": "#ffffff" },
+  { "score": 1, "radiusInner": 0.9, "radiusOuter": 1.0, "color": "#ffffff" }
+]

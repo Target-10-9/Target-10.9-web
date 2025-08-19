@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import {useNavigate} from "react-router-dom";
 import { login } from './authAPI';
 
 export const LoginForm: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -12,6 +14,8 @@ export const LoginForm: React.FC = () => {
         try {
             const response = await login(email, password);
             localStorage.setItem('token', response.token);
+            localStorage.setItem('userId', response.id);
+            navigate('/home');
         } catch (err: any) {
             if (err?.errors) {
                 const globalError = err.errors.map((e: any) => `${e.field}: ${e.message}`).join(', ');
@@ -55,13 +59,9 @@ export const LoginForm: React.FC = () => {
                 />
             </div>
 
-            <div className="text-right">
-                <a href="#" className="text-sm text-blue-600 hover:underline">Mot de passe oublié ?</a>
-            </div>
-
             <button
                 type="submit"
-                className="w-full py-3 rounded-full bg-[#123189] text-white font-semibold hover:bg-[#991d35] shadow-lg transition"
+                className="w-full py-3 rounded-full bg-[#123189] text-white font-semibold hover:bg-[#58628a] shadow-lg transition"
             >
                 Se connecter
             </button>
