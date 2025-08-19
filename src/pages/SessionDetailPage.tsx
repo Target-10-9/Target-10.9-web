@@ -51,6 +51,7 @@ const MiniTarget: React.FC<{ points: Point[]; size?: number }> = ({ points, size
                 ))}
                 {points.map((p, i) => (
                     <circle
+                        key={i}
                         cx={p.x_Coordinate / 0.5}
                         cy={p.y_Coordinate / 0.5}
                         r={0.02}
