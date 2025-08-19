@@ -59,10 +59,6 @@ export const LoginForm: React.FC = () => {
                 />
             </div>
 
-            <div className="text-right">
-                <a href="#" className="text-sm text-blue-600 hover:underline">Mot de passe oublié ?</a>
-            </div>
-
             <button
                 type="submit"
                 className="w-full py-3 rounded-full bg-[#123189] text-white font-semibold hover:bg-[#58628a] shadow-lg transition"

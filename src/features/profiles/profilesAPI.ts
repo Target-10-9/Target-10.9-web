@@ -8,13 +8,10 @@ export async function getUser(id: string) {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
     const data = await response.json();
-    console.log("User fetched:", data);
     return data;
 }
 

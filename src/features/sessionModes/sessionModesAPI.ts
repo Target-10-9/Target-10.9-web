@@ -8,13 +8,10 @@ export async function getSessionModes() {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
     const data = await response.json();
-    console.log("Session modes fetched:", data);
     return data;
 }
 export const addWeaponToSessionMode = async (sessionModeId: string, payload: { weaponDetailId: string }) => {
@@ -30,8 +27,6 @@ export const addWeaponToSessionMode = async (sessionModeId: string, payload: { w
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
@@ -49,8 +44,6 @@ export async function deleteWeaponFromSessionMode(sessionModeId: string, weaponI
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
