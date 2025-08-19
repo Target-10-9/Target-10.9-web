@@ -14,6 +14,7 @@ export const LoginForm: React.FC = () => {
         try {
             const response = await login(email, password);
             localStorage.setItem('token', response.token);
+            localStorage.setItem('userId', response.id);
             navigate('/home');
         } catch (err: any) {
             if (err?.errors) {
@@ -56,10 +57,6 @@ export const LoginForm: React.FC = () => {
                     className="w-full px-5 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#123189] focus:outline-none transition shadow-sm"
                     placeholder="••••••••"
                 />
-            </div>
-
-            <div className="text-right">
-                <a href="#" className="text-sm text-blue-600 hover:underline">Mot de passe oublié ?</a>
             </div>
 
             <button

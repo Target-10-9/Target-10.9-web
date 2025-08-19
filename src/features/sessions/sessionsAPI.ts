@@ -8,8 +8,6 @@ export async function getSessions() {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
@@ -27,12 +25,9 @@ export async function getSessionById(id: string) {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
     const data = await response.json();
-    console.log("Session fetched:", data);
     return data;
 }
 
@@ -54,8 +49,6 @@ export async function createSession(sessionData: any) {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
@@ -84,8 +77,6 @@ export async function updateSession(id: string, sessionData: any) {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
@@ -103,8 +94,6 @@ export async function deleteSession(id: string) {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 

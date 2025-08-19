@@ -1,7 +1,7 @@
-export async function getSessionModes() {
+export async function getUser(id: string) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:5203/api/SessionMode', {
+    const response = await fetch(`http://localhost:5203/api/User/${id}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -14,29 +14,30 @@ export async function getSessionModes() {
     const data = await response.json();
     return data;
 }
-export const addWeaponToSessionMode = async (sessionModeId: string, payload: { weaponDetailId: string }) => {
-    const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/SessionMode/${sessionModeId}/weapons`, {
-        method: 'POST',
+export async function updateUser(id: string, userData: any) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`http://localhost:5203/api/User/${id}`, {
+        method: "PUT",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(userData),
     });
 
     if (!response.ok) {
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
-    return null;
-};
+    return await response.json();
+}
 
-export async function deleteWeaponFromSessionMode(sessionModeId: string, weaponId: string) {
+export async function deleteUser(id: string) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/SessionMode/${sessionModeId}/weapons/${weaponId}`, {
+    const response = await fetch(`http://localhost:5203/api/User/${id}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${token}`,

@@ -37,8 +37,7 @@ export const SessionPage: React.FC = () => {
                 );
                 setAvailableDays(days as string[]);
             })
-            .catch((err) => {
-                console.error(err);
+            .catch(() => {
                 setError("Échec du chargement des sessions.");
             });
     }, []);

@@ -18,6 +18,7 @@ export const PrivateHeader: React.FC = () => {
             <nav className="flex gap-8">
                 <Link to="/home" className="text-gray-800 hover:text-[#123189] font-semibold">Accueil</Link>
                 <Link to="/sessions" className="text-gray-800 hover:text-[#123189] font-semibold">Mes sessions</Link>
+                <Link to="/profile" className="text-gray-800 hover:text-[#123189] font-semibold">Profil</Link>
             </nav>
 
             <button

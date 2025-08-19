@@ -32,11 +32,7 @@ export async function getPoints() {
         },
     });
 
-    console.log("Response :", response);
-
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
 
@@ -53,11 +49,7 @@ export async function getPointsBySessionId(sessionId: string) {
         }
     });
 
-    console.log("Response :", response);
-
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error:", errorText);
         throw new Error(`Erreur ${response.status} : ${response.statusText}`);
     }
     const data = await response.json();
