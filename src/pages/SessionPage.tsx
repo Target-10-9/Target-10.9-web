@@ -82,17 +82,13 @@ export const SessionPage: React.FC = () => {
                 </div>
 
                 <div className="mt-20 w-full max-w-7xl px-4">
-                    <button
-                        className="bg-[#be7c49] text-white px-4 mb-2 py-2 w-2/12 rounded-full text-sm"
-                        onClick={() => setShowModal(true)}
-                    >
-                        Ajouter
-                    </button>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-                        <h2 className="text-3xl font-semibold text-[#123189]">
-                            SESSIONS À VENIR
-                        </h2>
-
+                        <button
+                            className="bg-[#be7c49] text-white px-4 mb-2 py-2 w-2/12 rounded-full text-sm"
+                            onClick={() => setShowModal(true)}
+                        >
+                            Ajouter
+                        </button>
                         <div className="flex flex-wrap gap-4">
                             <div className="relative">
                                 <button
@@ -189,6 +185,7 @@ export const SessionPage: React.FC = () => {
                                         dateStyle: 'medium',
                                         timeStyle: 'short',
                                     })}
+                                    etat={session.etat}
                                 />
                             ))}
                         </div>

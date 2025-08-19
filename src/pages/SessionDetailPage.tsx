@@ -44,6 +44,8 @@ export const SessionDetailPage: React.FC = () => {
     const [startSessionModal, setStartSessionModal] = useState(false);
     const [targetId, setTargetId] = useState('');
 
+    const [startError, setStartError] = useState<string | null>(null);
+
     const isoToLocalInput = (iso?: string) => {
         if (!iso) return '';
         const d = new Date(iso);
@@ -490,11 +492,15 @@ export const SessionDetailPage: React.FC = () => {
                 inputProps={{
                     placeholder: "ID de la cible",
                     value: targetId,
-                    onChange: setTargetId
+                    onChange: (val) => {
+                        setTargetId(val);
+                        setStartError(null);
+                    }
                 }}
+                errorMessage={startError ?? undefined}
                 onConfirm={async (inputValue) => {
                     if (!inputValue || inputValue.trim() === '') {
-                        alert("Vous devez renseigner l'ID de la cible !");
+                        setStartError("Vous devez renseigner l'ID de la cible !");
                         return;
                     }
 
@@ -502,10 +508,7 @@ export const SessionDetailPage: React.FC = () => {
 
                     try {
                         const sessionModeId = session.sessionModeId ?? session.sessionModes?.id;
-                        if (!sessionModeId) {
-                            console.error("Impossible de démarrer la session : sessionModeId manquant !");
-                            return;
-                        }
+                        if (!sessionModeId) return;
 
                         const payload = {
                             etat: "InProgress",
@@ -521,10 +524,19 @@ export const SessionDetailPage: React.FC = () => {
                         const updated = await getSessionById(id);
                         setSession(updated);
                         setStartSessionModal(false);
-                        setTargetId(''); // reset input
+                        setTargetId('');
                         navigate(`/sessions/${id}`);
-                    } catch (err) {
-                        console.error("Erreur lors du démarrage de la session :", err);
+                    } catch (err: any) {
+                        let message = "Erreur lors du démarrage de la session.";
+
+                        if (err.response?.data?.message) {
+                            message = err.response.data.message;
+                        }
+                        else if (err.message) {
+                            message = err.message;
+                        }
+
+                        setStartError(message);
                     }
                 }}
                 onCancel={() => setStartSessionModal(false)}

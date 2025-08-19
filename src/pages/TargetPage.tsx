@@ -249,13 +249,30 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
     }, [sessionEnded, session]);
 
     const paused = !shooting.running && shooting.seconds > 0;
+    useEffect(() => {
+        if (paused && rest.seconds === rest.initial) {
+            rest.start();
+        }
+    }, [paused, rest]);
+
+    useEffect(() => {
+        if (rest.seconds <= 0 && paused) {
+            shooting.start();
+        }
+    }, [rest.seconds, paused, shooting]);
 
     /* --------- RENDER --------- */
     return (
         <>
-            <PrivateHeader />
-            <div style={{ height: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, background: '#f3f4f6', padding: 20, position: 'relative' }}>
-                {!session ? <div>Chargement de la session...</div> : (
+
+            <div style={{ height: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, background: '#FFFFF', padding: 20, position: 'relative' }}>
+                {!session ? (
+                    <>
+                    <PrivateHeader />
+                    <div>Chargement de la session...</div>
+
+                    </>
+                    ) : (
                     <>
                         <h2 style={{ fontSize: 28, fontWeight: 700, color: '#111827' }}>Score total : {scoreTotal}</h2>
                         <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
@@ -309,7 +326,7 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
 
                         {/* OVERLAYS */}
                         <Overlay visible={paused && !showSessionEnded} title="PAUSE" subText={rest.seconds > 0 ? formatSeconds(rest.seconds) : undefined} onButtonClick={() => shooting.start()} buttonText="Reprendre" />
-                        <Overlay visible={showSessionEnded} title="SESSION TERMINÉE" buttonText="Retour au détail" onButtonClick={() => (window.location.href = `/session/${sessionId}`)} />
+                        <Overlay visible={showSessionEnded} title="SESSION TERMINÉE" buttonText="Retour au détail de la session" onButtonClick={() => (window.location.href = `/session/${sessionId}`)} />
                     </>
                 )}
             </div>

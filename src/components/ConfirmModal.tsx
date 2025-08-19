@@ -4,7 +4,7 @@ interface ConfirmModalProps {
     isOpen: boolean;
     title?: string;
     message: string;
-    onConfirm: (inputValue?: string) => void; // inputValue optionnel
+    onConfirm: (inputValue?: string) => void;
     onCancel: () => void;
     confirmText?: string;
     cancelText?: string;
@@ -14,6 +14,7 @@ interface ConfirmModalProps {
         value: string;
         onChange: (val: string) => void;
     };
+    errorMessage?: string;
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -25,7 +26,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                                                               confirmText = "Oui",
                                                               cancelText = "Non",
                                                               confirmColor = "#e53e3e",
-                                                              inputProps
+                                                              inputProps,
+                                                              errorMessage // ✅ récupération
                                                           }) => {
     if (!isOpen) return null;
 
@@ -36,13 +38,18 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 <p className="mb-4">{message}</p>
 
                 {inputProps && (
-                    <input
-                        type="text"
-                        placeholder={inputProps.placeholder}
-                        value={inputProps.value}
-                        onChange={(e) => inputProps.onChange(e.target.value)}
-                        className="w-full border p-2 rounded mb-4"
-                    />
+                    <>
+                        <input
+                            type="text"
+                            placeholder={inputProps.placeholder}
+                            value={inputProps.value}
+                            onChange={(e) => inputProps.onChange(e.target.value)}
+                            className="w-full border p-2 rounded mb-2"
+                        />
+                        {errorMessage && (
+                            <p className="text-red-600 text-sm mb-2">{errorMessage}</p> // ✅ message d'erreur
+                        )}
+                    </>
                 )}
 
                 <div className="flex justify-end space-x-4">

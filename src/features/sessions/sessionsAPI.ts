@@ -58,11 +58,10 @@ export async function createSession(sessionData: any) {
 export async function updateSession(id: string, sessionData: any) {
     const token = localStorage.getItem('token');
 
-    // On envoie uniquement l'ID du sessionMode (pas l'objet complet)
     const payload = {
         ...sessionData,
         sessionModeId: sessionData.sessionMode?.id || sessionData.sessionModeId,
-        sessionMode: undefined, // on retire l'objet complet pour éviter un conflit
+        sessionMode: undefined,
         dateStart: new Date(sessionData.dateStart).toISOString(),
         dateEnd: new Date(sessionData.dateEnd).toISOString(),
     };
@@ -76,12 +75,15 @@ export async function updateSession(id: string, sessionData: any) {
         body: JSON.stringify(payload),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        throw new Error(`Erreur ${response.status} : ${response.statusText}`);
+        throw new Error(data?.message || `Erreur ${response.status} : ${response.statusText}`);
     }
 
-    return await response.json();
+    return data;
 }
+
 
 export async function deleteSession(id: string) {
     const token = localStorage.getItem('token');

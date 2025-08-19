@@ -13,7 +13,7 @@ export const Overlay: React.FC<OverlayProps> = ({ visible, title, buttonText, on
 
     return (
         <div style={{
-            position: 'absolute',
+            position: 'fixed',
             top: 0, left: 0, right: 0, bottom: 0,
             background: 'rgba(0,0,0,0.5)',
             backdropFilter: 'blur(5px)',
@@ -25,7 +25,7 @@ export const Overlay: React.FC<OverlayProps> = ({ visible, title, buttonText, on
             fontSize: '3rem',
             zIndex: 20,
         }}>
-            <div>{title}</div>
+        <div>{title}</div>
             {subText && <div style={{ fontSize: '1.5rem', marginTop: '1rem' }}>{subText}</div>}
             {buttonText && onButtonClick && (
                 <button

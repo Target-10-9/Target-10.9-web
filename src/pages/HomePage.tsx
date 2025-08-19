@@ -3,9 +3,10 @@ import { getSessions } from '../features/sessions/sessionsAPI';
 import { SessionCard } from '../components/SessionCard.tsx';
 import ShootImage from '../assets/ShootImageLogin.jpg';
 import { PrivateHeader } from '../components/PrivateHeader';
-import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 export const HomePage: React.FC = () => {
+    const navigate = useNavigate();
     const [sessions, setSessions] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
 
@@ -61,10 +62,13 @@ export const HomePage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="mt-4 pl-12 absolute bottom-10 left-0">
-                    <Link to={"/sessions"} className="bg-[#123189] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#58628a] transition">
+                <div className="fixed bottom-10 left-12 z-50">
+                    <button
+                        onClick={() => navigate("/sessions")}
+                        className="bg-[#123189] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#58628a] transition"
+                    >
                         MES SESSIONS
-                    </Link>
+                    </button>
                 </div>
             </div>
         </>
