@@ -14,8 +14,8 @@ import ringsData from '../data/targetRings.json';
 
 type Ring = { radiusOuter: number; radiusInner: number; color: string; score: number };
 type TargetPageProps = { sessionId: string };
-type ApiPoint = { id?: string; x_Coordinate: number; y_Coordinate: number; dateTimePoint?: string; sessionId: string };
-type Shot = { position: THREE.Vector3; score: number };
+type ApiPoint = { id: number; x_Coordinate: number; y_Coordinate: number; dateTimePoint?: string; sessionId: string };
+type Shot = { id: number; position: THREE.Vector3; score: number };
 
 const rings: Ring[] = ringsData;
 
@@ -141,8 +141,8 @@ const Cross: React.FC<{ position: THREE.Vector3; size?: number }> = ({ position,
 export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
     const [session, setSession] = useState<any>(null);
     const [shots, setShots] = useState<Shot[]>([]);
-    const [shotsFired, setShotsFired] = useState(0);
     const [scoreTotal, setScoreTotal] = useState(0);
+    const shotsFired = shots.length;
 
     const shooting = useManualCountdown(0);
     const rest = useManualCountdown(0);
@@ -169,12 +169,12 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
                 if (!mounted) return;
 
                 const mapped: Shot[] = (apiPoints || []).map(p => ({
+                    id: p.id,
                     position: new THREE.Vector3(p.x_Coordinate, p.y_Coordinate, 0),
                     score: scoreForXY(p.x_Coordinate, p.y_Coordinate),
                 }));
 
                 setShots(mapped);
-                setShotsFired(mapped.length);
                 setScoreTotal(mapped.reduce((sum, s) => sum + s.score, 0));
             } catch (e) {
                 console.error('Erreur initialisation TargetPage :', e);
@@ -184,24 +184,59 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
         return () => { mounted = false; };
     }, [sessionId]);
 
-    /* ---- Gestion des tirs ---- */
+    /* ---- Polling pour récupérer les points en continu ---- */
+    useEffect(() => {
+        if (!sessionId) return;
+
+        const interval = setInterval(async () => {
+            try {
+                const apiPoints: ApiPoint[] = await getPointsBySessionId(sessionId);
+
+                setShots(prev => {
+                    const existingIds = new Set(prev.map(s => s.id));
+                    const newShots = apiPoints
+                        .filter(p => !existingIds.has(p.id))
+                        .map(p => ({
+                            id: p.id,
+                            position: new THREE.Vector3(p.x_Coordinate, p.y_Coordinate, 0),
+                            score: scoreForXY(p.x_Coordinate, p.y_Coordinate),
+                        }));
+
+                    if (newShots.length > 0) {
+                        setScoreTotal(prev => prev + newShots.reduce((sum, s) => sum + s.score, 0));
+                        return [...prev, ...newShots];
+                    }
+
+                    return prev;
+                });
+
+            } catch (err) {
+                console.error("Erreur lors du polling des points :", err);
+            }
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [sessionId]);
+
+    /* ---- Gestion des tirs manuels ---- */
     const handleHit = async (p: THREE.Vector3) => {
         if (!session?.sessionModes?.modeDetails) return;
         const limit = session.sessionModes.modeDetails.shootLimit || Infinity;
         if (shotsFired >= limit || shooting.seconds <= 0) return;
 
         const score = scoreForXY(p.x, p.y);
-        setShots(prev => [...prev, { position: new THREE.Vector3(p.x, p.y, 0), score }]);
-        setScoreTotal(prev => prev + score);
-        setShotsFired(prev => prev + 1);
 
         try {
-            await addPoint({
+            const newPoint = await addPoint({
                 x_Coordinate: p.x,
                 y_Coordinate: p.y,
                 dateTimePoint: new Date().toISOString(),
                 sessionId,
             });
+
+            setShots(prev => [...prev, { id: newPoint.id, position: new THREE.Vector3(p.x, p.y, 0), score }]);
+            setScoreTotal(prev => prev + score);
+
         } catch (err) {
             console.error("Erreur lors de l'ajout du point:", err);
         }
@@ -264,15 +299,13 @@ export const TargetPage: React.FC<TargetPageProps> = ({ sessionId }) => {
     /* --------- RENDER --------- */
     return (
         <>
-
             <div style={{ height: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, background: '#FFFFF', padding: 20, position: 'relative' }}>
                 {!session ? (
                     <>
-                    <PrivateHeader />
-                    <div>Chargement de la session...</div>
-
+                        <PrivateHeader />
+                        <div>Chargement de la session...</div>
                     </>
-                    ) : (
+                ) : (
                     <>
                         <h2 style={{ fontSize: 28, fontWeight: 700, color: '#111827' }}>Score total : {scoreTotal}</h2>
                         <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
