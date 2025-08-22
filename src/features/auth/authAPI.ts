@@ -1,5 +1,7 @@
+import {API_BASE} from "../../lib/api.ts";
+
 export async function login(email: string, password: string) {
-    const response = await fetch('http://localhost:5203/api/Authentication/login', {
+    const response = await fetch(`${API_BASE}/Authentication/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -21,7 +23,7 @@ export async function register(user: {
     lastName: string;
     licenseNumber: string;
 }) {
-    const response = await fetch('http://localhost:5203/api/Authentication/register', {
+    const response = await fetch(`${API_BASE}/Authentication/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user),

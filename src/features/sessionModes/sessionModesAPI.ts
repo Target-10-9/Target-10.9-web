@@ -1,7 +1,9 @@
+import {API_BASE} from "../../lib/api.ts";
+
 export async function getSessionModes() {
     const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:5203/api/SessionMode', {
+    const response = await fetch(`${API_BASE}/SessionMode`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -17,7 +19,7 @@ export async function getSessionModes() {
 export const addWeaponToSessionMode = async (sessionModeId: string, payload: { weaponDetailId: string }) => {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/SessionMode/${sessionModeId}/weapons`, {
+    const response = await fetch(`${API_BASE}/SessionMode/${sessionModeId}/weapons`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -36,7 +38,7 @@ export const addWeaponToSessionMode = async (sessionModeId: string, payload: { w
 export async function deleteWeaponFromSessionMode(sessionModeId: string, weaponId: string) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/SessionMode/${sessionModeId}/weapons/${weaponId}`, {
+    const response = await fetch(`${API_BASE}/SessionMode/${sessionModeId}/weapons/${weaponId}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${token}`,

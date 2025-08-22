@@ -1,7 +1,9 @@
+import {API_BASE} from "../../lib/api.ts";
+
 export async function getUser(id: string) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/User/${id}`, {
+    const response = await fetch(`${API_BASE}/User/${id}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -18,7 +20,7 @@ export async function getUser(id: string) {
 export async function updateUser(id: string, userData: any) {
     const token = localStorage.getItem("token");
 
-    const response = await fetch(`http://localhost:5203/api/User/${id}`, {
+    const response = await fetch(`${API_BASE}/User/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -37,7 +39,7 @@ export async function updateUser(id: string, userData: any) {
 export async function deleteUser(id: string) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/User/${id}`, {
+    const response = await fetch(`${API_BASE}/User/${id}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${token}`,

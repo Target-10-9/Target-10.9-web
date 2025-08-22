@@ -1,3 +1,5 @@
+import {API_BASE} from "../../lib/api.ts";
+
 export async function addPoint(point: {
     x_Coordinate: number;
     y_Coordinate: number;
@@ -6,7 +8,7 @@ export async function addPoint(point: {
 }) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/Point`, {
+    const response = await fetch(`${API_BASE}/Point`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -26,7 +28,7 @@ export async function addPoint(point: {
 export async function getPoints() {
     const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:5203/api/Point', {
+    const response = await fetch(`${API_BASE}/Point`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -43,7 +45,7 @@ export async function getPoints() {
 export async function getPointsBySessionId(sessionId: string) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/Point/${sessionId}`, {
+    const response = await fetch(`${API_BASE}/Point/${sessionId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }

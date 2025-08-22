@@ -1,7 +1,9 @@
+import {API_BASE} from "../../lib/api.ts";
+
 export async function getSessions() {
     const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:5203/api/Session', {
+    const response = await fetch(`${API_BASE}/Session`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -18,7 +20,7 @@ export async function getSessions() {
 export async function getSessionById(id: string) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/Session/${id}`, {
+    const response = await fetch(`${API_BASE}/Session/${id}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -39,7 +41,7 @@ export async function createSession(sessionData: any) {
         dateEnd: new Date(sessionData.dateEnd).toISOString(),
     };
 
-    const response = await fetch('http://localhost:5203/api/Session', {
+    const response = await fetch(`${API_BASE}/Session`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -66,7 +68,7 @@ export async function updateSession(id: string, sessionData: any) {
         dateEnd: new Date(sessionData.dateEnd).toISOString(),
     };
 
-    const response = await fetch(`http://localhost:5203/api/Session/${id}`, {
+    const response = await fetch(`${API_BASE}/Session/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -88,7 +90,7 @@ export async function updateSession(id: string, sessionData: any) {
 export async function deleteSession(id: string) {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:5203/api/Session/${id}`, {
+    const response = await fetch(`${API_BASE}/Session/${id}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${token}`,
