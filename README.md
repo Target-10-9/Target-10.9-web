@@ -20,6 +20,8 @@ Si besoins de tout redémarer :
 ```
 
 
+certains élément doivent etre apporter pour que tout puisse correctement fonctionner avec Vercel
+
 
 
 
